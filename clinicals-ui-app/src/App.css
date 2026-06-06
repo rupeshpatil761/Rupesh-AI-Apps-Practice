@@ -1,0 +1,323 @@
+/* Reused by AddPatient + Home */
+.patient-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #f4f7fb;
+}
+
+.patient-card {
+  width: 100%;
+  max-width: 480px;
+  min-height: 420px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 28px 24px;
+}
+
+/* Home page wider card */
+.home-card {
+  max-width: 760px;
+  min-height: 520px;
+}
+
+.patient-title {
+  margin: 0 0 20px;
+  font-size: 1.5rem;
+  text-align: center;
+  color: #1f2937;
+}
+
+/* Patient info summary block (AddClinicals) */
+.patient-info {
+  background: #f0f4ff;
+  border: 1px solid #dbe4ff;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  display: grid;
+  gap: 6px;
+}
+
+.patient-info p {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.92rem;
+  color: #374151;
+}
+
+.patient-info span {
+  color: #6b7280;
+}
+
+.patient-info strong {
+  color: #1f2937;
+}
+
+/* Form styles */
+.patient-form {
+  display: grid;
+  gap: 14px;
+}
+
+.form-group {
+  display: grid;
+  gap: 6px;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.form-group input {
+  height: 40px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.save-btn {
+  margin-top: 8px;
+  height: 42px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #1d4ed8;
+}
+
+.form-message {
+  margin-top: 14px;
+  text-align: center;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+/* Table styles */
+.table-wrap {
+  width: 100%;
+  max-height: 420px;
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}
+
+.patient-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.patient-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #2563eb;
+  color: #fff;
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.patient-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.patient-table tbody tr:nth-child(even) {
+  background: #f9fbff;
+}
+
+.patient-table tbody tr:hover {
+  background: #eef4ff;
+}
+
+.empty-cell {
+  text-align: center;
+}
+
+/* Blue button link (e.g. Add New Patient) */
+.table-link {
+  display: inline-block;
+  margin-top: 16px;
+  text-decoration: none;
+  background: #2563eb;
+  color: #fff;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.table-link:hover {
+  background: #1d4ed8;
+}
+
+/* Centered link inside patient-card (e.g. Add New Patient on Home) */
+.patient-card .table-link {
+  display: block;
+  width: fit-content;
+  margin: 16px auto 0;
+}
+
+/* Back to Home link inside card (AddClinicals / AddPatient) */
+.patient-card-link {
+  display: block;
+  width: fit-content;
+  margin: 16px auto 0;
+  text-decoration: none;
+  color: #2563eb;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.patient-card-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* Inline hyperlink style (Add Clinical Data in table row) */
+.inline-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.inline-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* Error text */
+.home-error {
+  margin: 0;
+  text-align: center;
+  color: #dc2626;
+  font-size: 0.95rem;
+}
+
+/* Action cell with multiple links */
+.action-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.action-divider {
+  color: #d1d5db;
+  font-size: 0.85rem;
+}
+
+/* Button styled as inline hyperlink */
+.inline-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #2563eb;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: inherit;
+}
+
+.inline-link-btn:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.inline-link-btn.delete-link {
+  color: #dc2626;
+}
+
+.inline-link-btn.delete-link:hover {
+  color: #b91c1c;
+  text-decoration: underline;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 24px;
+}
+
+/* Modal box */
+.modal-box {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 560px;
+  padding: 24px;
+  animation: modalIn 0.18s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #6b7280;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.modal-close:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+/* Modal inner table scroll area */
+.modal-table-wrap {
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}
+

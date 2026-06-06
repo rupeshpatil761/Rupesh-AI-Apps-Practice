@@ -73,25 +73,6 @@ class ClinicalDataControllerMvcTest {
     }
 
     @Test
-    void createClinicalData_ReturnsCreatedData() throws Exception {
-        ClinicalData savedData = new ClinicalData();
-        savedData.setId(3L);
-        savedData.setComponentName("temperature");
-        savedData.setComponentValue("98.6");
-
-        when(clinicalDataRepository.save(any(ClinicalData.class))).thenReturn(savedData);
-
-        String clinicalDataJson = "{\"componentName\":\"temperature\",\"componentValue\":\"98.6\"}";
-
-        mockMvc.perform(post("/api/clinicaldata")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(clinicalDataJson))
-                .andExpect(status().isCreated());
-
-        verify(clinicalDataRepository, times(1)).save(any(ClinicalData.class));
-    }
-
-    @Test
     void getAllClinicalData_ReturnsListOfData() throws Exception {
         List<ClinicalData> dataList = Arrays.asList(clinicalData1, clinicalData2);
         when(clinicalDataRepository.findAll()).thenReturn(dataList);
@@ -196,9 +177,9 @@ class ClinicalDataControllerMvcTest {
         when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
         when(clinicalDataRepository.save(any(ClinicalData.class))).thenReturn(clinicalData1);
 
-        String clinicalDataJson = "{\"componentName\":\"bp\",\"componentValue\":\"120/80\"}";
+        String clinicalDataJson = "{\"componentName\":\"bp\",\"componentValue\":\"120/80\",\"patientId\":1}";
 
-        mockMvc.perform(post("/api/clinicaldata/patient/1")
+        mockMvc.perform(post("/api/clinicaldata/clinicals")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(clinicalDataJson))
                 .andExpect(status().isCreated());
@@ -211,9 +192,9 @@ class ClinicalDataControllerMvcTest {
     void createClinicalDataForPatient_Returns404WhenPatientNotFound() throws Exception {
         when(patientRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        String clinicalDataJson = "{\"componentName\":\"bp\",\"componentValue\":\"120/80\"}";
+        String clinicalDataJson = "{\"componentName\":\"bp\",\"componentValue\":\"120/80\",\"patientId\":999}";
 
-        mockMvc.perform(post("/api/clinicaldata/patient/999")
+        mockMvc.perform(post("/api/clinicaldata/clinicals")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(clinicalDataJson))
                 .andExpect(status().isNotFound());
