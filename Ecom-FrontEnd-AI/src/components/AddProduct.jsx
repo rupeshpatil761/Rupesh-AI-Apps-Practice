@@ -137,7 +137,7 @@ const AddProduct = () => {
         null,
         {
           params: {
-            name: product.name,
+            productName: product.name,
             category: product.category
           }
         }
