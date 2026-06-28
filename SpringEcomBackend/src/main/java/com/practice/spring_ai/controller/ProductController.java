@@ -1,7 +1,7 @@
 package com.practice.spring_ai.controller;
 
 import com.practice.spring_ai.model.Product;
-import com.practice.spring_ai.service.AiChatService;
+import com.practice.spring_ai.service.AiService;
 import com.practice.spring_ai.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class ProductController {
     private ProductService productService;
 
     @Autowired
-    private AiChatService aiChatService;
+    private AiService aiChatService;
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts(){
@@ -117,6 +117,18 @@ public class ProductController {
             return new ResponseEntity<>(description, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Failed to generate description for product='{}': {}", productName, e.getMessage(), e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/product/generate-image")
+    public ResponseEntity<?> generateImage(@RequestParam String name, @RequestParam String category, @RequestParam String description) {
+        log.info("Generating AI image for product='{}', category='{}'", name, category);
+        try {
+            byte[] bytes = aiChatService.generateProductImage(name, category, description);
+            return new ResponseEntity<>(bytes, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Failed to generate image for product='{}': {}", name, e.getMessage(), e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
