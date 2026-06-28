@@ -15,7 +15,7 @@ function AskAi() {
   const [error, setError] = useState(null);
 
   // Prefer env var; fallback helps during local dev
-  const baseUrl = import.meta.env.VITE_BASE_URL ?? 'http://localhost:8080';
+  const baseUrl = import.meta.env.REACT_BASE_URL ?? 'http://localhost:8080';
 
   // Seed a welcome message once
   useEffect(() => {

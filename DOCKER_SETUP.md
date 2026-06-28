@@ -97,7 +97,7 @@ docker-compose logs -f postgres
 **Port**: 3000
 
 **Build Args**:
-- `VITE_BASE_URL`: API base URL (http://localhost:8080)
+- `REACT_BASE_URL`: API base URL (http://localhost:8080)
 
 **Note**: Frontend is built as static files and served by `serve` package for fast performance.
 
@@ -209,7 +209,7 @@ docker-compose exec backend curl -s http://postgres:5432
 
 ### Frontend shows "Cannot reach backend"
 
-**Cause**: `VITE_BASE_URL` not set correctly or backend not ready.
+**Cause**: `REACT_BASE_URL` not set correctly or backend not ready.
 
 **Solution**:
 1. Ensure backend is running: `docker-compose logs backend`

@@ -24,7 +24,7 @@ const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 const navbarRef = useRef(null);
 
   const navigate = useNavigate();
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = import.meta.env.REACT_BASE_URL;
   const { cart } = useContext(AppContext);
   const cartCount = cart.reduce((total, item) => total + (item.quantity || 1), 0);
 

@@ -49,10 +49,10 @@ services:
       context: ./Ecom-FrontEnd-AI
       dockerfile: Dockerfile
       args:
-        VITE_BASE_URL: http://localhost:8080
+        REACT_BASE_URL: http://localhost:8080
     container_name: ecom_frontend
     environment:
-      VITE_BASE_URL: http://localhost:8080
+      REACT_BASE_URL: http://localhost:8080
     ports:
       - "3000:3000"
     depends_on:

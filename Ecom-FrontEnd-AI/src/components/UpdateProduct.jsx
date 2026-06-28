@@ -25,7 +25,7 @@ const UpdateProduct = () => {
     const [loading, setLoading] = useState(false);
   
 
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = import.meta.env.REACT_BASE_URL;
 
   useEffect(() => {
     const fetchProduct = async () => {

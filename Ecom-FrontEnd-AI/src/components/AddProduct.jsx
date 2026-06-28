@@ -15,7 +15,7 @@ const AddProduct = () => {
     productAvailable: false,
   });
 
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = import.meta.env.REACT_BASE_URL;
 
   const [image, setImage] = useState(null); // Now optional
   const [loading, setLoading] = useState(false);

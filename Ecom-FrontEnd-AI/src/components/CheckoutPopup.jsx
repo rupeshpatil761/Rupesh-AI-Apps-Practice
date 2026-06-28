@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import AppContext from '../Context/Context';
 
 const CheckoutPopup = ({ show, handleClose, cartItems, totalPrice }) => {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = import.meta.env.REACT_BASE_URL;
   const navigate = useNavigate();
   const { clearCart } = useContext(AppContext);
 
