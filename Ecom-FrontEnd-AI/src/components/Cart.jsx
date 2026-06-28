@@ -5,7 +5,7 @@ import CheckoutPopup from "./CheckoutPopup";
 import { Button } from 'react-bootstrap';
 
 const Cart = () => {
-  const { cart, removeFromCart, clearCart } = useContext(AppContext);
+  const { cart, removeFromCart, clearCart, updateCartQuantity } = useContext(AppContext);
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [cartImage, setCartImage] = useState([]);
@@ -46,32 +46,25 @@ const Cart = () => {
   };
 
   const handleIncreaseQuantity = (itemId) => {
-    const newCartItems = cartItems.map((item) => {
-      if (item.id === itemId) {
-        if (item.quantity < item.stockQuantity) {
-          return { ...item, quantity: item.quantity + 1 };
-        } else {
-          toast.info("Cannot add more than available stock");
-        }
-      }
-      return item;
-    });
-    setCartItems(newCartItems);
+    const cartItem = cartItems.find((item) => item.id === itemId);
+    if (!cartItem) return;
+
+    if (cartItem.quantity < cartItem.stockQuantity) {
+      updateCartQuantity(itemId, cartItem.quantity + 1);
+    } else {
+      toast.info("Cannot add more than available stock");
+    }
   };
 
   const handleDecreaseQuantity = (itemId) => {
-    const newCartItems = cartItems.map((item) =>
-      item.id === itemId
-        ? { ...item, quantity: Math.max(item.quantity - 1, 1) }
-        : item
-    );
-    setCartItems(newCartItems);
+    const cartItem = cartItems.find((item) => item.id === itemId);
+    if (!cartItem) return;
+
+    updateCartQuantity(itemId, cartItem.quantity - 1);
   };
 
   const handleRemoveFromCart = (itemId) => {
     removeFromCart(itemId);
-    const newCartItems = cartItems.filter((item) => item.id !== itemId);
-    setCartItems(newCartItems);
   };
   const convertBase64ToDataURL = (base64String, mimeType = 'image/jpeg') => {
   // ✅ Fallback image if base64String is empty or undefined

@@ -7,6 +7,7 @@ const AppContext = createContext({
   cart: [],
   addToCart: (product) => {},
   removeFromCart: (productId) => {},
+  updateCartQuantity: (productId, quantity) => {},
   refreshData:() =>{},
   updateStockQuantity: (productId, newQuantity) =>{}  
 });
@@ -42,6 +43,14 @@ export const AppProvider = ({ children }) => {
     console.log("CART",cart)
   };
 
+  const updateCartQuantity = (productId, quantity) => {
+    const safeQuantity = Math.max(1, quantity);
+    const updatedCart = cart.map((item) =>
+      item.id === productId ? { ...item, quantity: safeQuantity } : item
+    );
+    setCart(updatedCart);
+  };
+
   const refreshData = async () => {
     try {
       const response = await axios.get(`${baseUrl}/api/products`);
@@ -64,7 +73,7 @@ export const AppProvider = ({ children }) => {
   }, [cart]);
   
   return (
-    <AppContext.Provider value={{ data, isError, cart, addToCart, removeFromCart,refreshData, clearCart  }}>
+    <AppContext.Provider value={{ data, isError, cart, addToCart, removeFromCart, updateCartQuantity, refreshData, clearCart }}>
       {children}
     </AppContext.Provider>
   );
