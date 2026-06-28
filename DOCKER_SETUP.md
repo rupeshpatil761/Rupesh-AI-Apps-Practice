@@ -1,6 +1,6 @@
 # Docker Setup Guide - Ecommerce Application
 
-This guide explains how to run the entire Ecommerce application (Spring Boot backend, React frontend, and PostgreSQL) using Docker and Docker Compose.
+This guide explains how to run the entire Ecommerce application (Spring Boot backend, React frontend, PostgreSQL with pgvector, and Ollama) using Docker and Docker Compose.
 
 ## Prerequisites
 
@@ -40,7 +40,9 @@ docker-compose up -d
 This will:
 - Build the Spring Boot backend Docker image
 - Build the React frontend Docker image
-- Start PostgreSQL (with data persistence)
+- Start PostgreSQL with pgvector (with data persistence)
+- Start Ollama (local LLM + embeddings API)
+- Pull Ollama models via `ollama-init`
 - Start the backend service (port 8080)
 - Start the frontend service (port 3000)
 
@@ -48,6 +50,9 @@ This will:
 ```
 ✓ Network ecom_network Created
 ✓ Volume postgres_data Created
+✓ Volume ollama_data Created
+✓ Container ollama Created
+✓ Container ollama-init Created
 ✓ Container ecom_postgres Created
 ✓ Container ecom_backend Created
 ✓ Container ecom_frontend Created
@@ -57,7 +62,8 @@ This will:
 
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8080
-- **PostgreSQL**: localhost:5432
+- **PostgreSQL (pgvector)**: localhost:5432
+- **Ollama API**: http://localhost:11434
 
 ### 4. Monitor Logs
 
@@ -71,6 +77,8 @@ View logs from a specific service:
 docker-compose logs -f backend
 docker-compose logs -f frontend
 docker-compose logs -f postgres
+docker-compose logs -f ollama
+docker-compose logs -f ollama-init
 ```
 
 ---
@@ -113,6 +121,23 @@ docker-compose logs -f postgres
 - Survives container restarts
 - Delete with: `docker volume rm postgres_data`
 
+### Ollama Service
+
+**Port**: 11434
+
+**Purpose**:
+- Serves local chat models and embedding models
+- Used for RAG pipelines without external API cost
+
+**Model Persistence**:
+- Ollama models are stored in `ollama_data` Docker volume
+- Survive container restarts/redeploys
+
+**Auto Model Pull**:
+- `ollama-init` waits for Ollama to be ready
+- Pulls models such as `qwen2.5:0.5b` and `nomic-embed-text`
+- Can be rerun safely if models are already present
+
 ---
 
 ## Common Commands
@@ -140,6 +165,22 @@ docker-compose up -d --build
 ```bash
 docker-compose up -d --build backend
 docker-compose up -d --build frontend
+docker-compose up -d --build ollama
+```
+
+### Pull / Verify Ollama Models
+
+```bash
+docker compose exec ollama ollama pull qwen2.5:0.5b
+docker compose exec ollama ollama pull nomic-embed-text
+docker compose exec ollama ollama list
+```
+
+### Run Ollama Init Pull Service
+
+```bash
+docker compose up -d ollama
+docker compose run --rm ollama-init
 ```
 
 ### Access Container Shell
@@ -159,6 +200,23 @@ docker-compose exec postgres psql -U postgres -d ecom-db
 
 ```bash
 docker-compose logs -f --timestamps backend
+```
+
+### Test Ollama Embeddings API (PowerShell)
+
+```powershell
+Invoke-RestMethod -Method Get -Uri "http://localhost:11434/api/tags"
+
+$headers = @{ "Content-Type" = "application/json" }
+$body = '{"model":"nomic-embed-text","prompt":"wireless bluetooth headphones"}'
+Invoke-RestMethod -Method Post -Uri "http://localhost:11434/api/embeddings" -Headers $headers -Body $body
+```
+
+### Test Ollama Embeddings API (CMD)
+
+```cmd
+curl -X GET http://localhost:11434/api/tags
+curl -X POST http://localhost:11434/api/embeddings -H "Content-Type: application/json" -d "{\"model\":\"nomic-embed-text\",\"prompt\":\"wireless bluetooth headphones\"}"
 ```
 
 ---
@@ -213,11 +271,34 @@ docker-compose exec backend curl -s http://postgres:5432
 
 **Solution**:
 1. Ensure backend is running: `docker-compose logs backend`
-2. Check frontend environment: `docker-compose exec frontend env | grep VITE`
+2. Check frontend environment: `docker-compose exec frontend env | grep REACT`
 3. Rebuild with correct base URL:
    ```bash
    docker-compose up -d --build frontend
    ```
+
+### Ollama model not found
+
+**Example error**: `model "nomic-embed-text" not found, try pulling it first`
+
+**Solution**:
+```bash
+docker compose run --rm ollama-init
+docker compose exec ollama ollama list
+```
+
+If still missing:
+```bash
+docker compose exec ollama ollama pull nomic-embed-text
+```
+
+### PowerShell curl command fails with headers error
+
+**Cause**: PowerShell aliases `curl` to `Invoke-WebRequest`, which does not accept Linux-style `-H`/`-d` flags the same way.
+
+**Solution**:
+- Use `Invoke-RestMethod` (recommended on PowerShell), or
+- Use `curl.exe` instead of `curl`.
 
 ### Rebuild from scratch (clear all)
 
@@ -233,12 +314,15 @@ docker-compose up -d --build
 
 ```yaml
 services:
-  postgres:         # PostgreSQL database
+  ollama:           # Local LLM/embeddings API (port 11434)
+  ollama-init:      # Pulls required models on startup
+  postgres:         # PostgreSQL + pgvector database
   backend:          # Spring Boot API (port 8080)
   frontend:         # React app (port 3000)
 
 volumes:
   postgres_data:    # Persistent PostgreSQL data
+  ollama_data:      # Persistent Ollama model cache
 
 networks:
   ecom_network:     # Internal Docker network for service communication

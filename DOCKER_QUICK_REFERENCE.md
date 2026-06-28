@@ -68,7 +68,7 @@ docker-compose logs -f
 
 | Command | Purpose |
 |---------|---------|
-| `docker-compose up -d` | Start all services in background |
+| `docker compose up -d` | Start all services in background |
 | `docker-compose down` | Stop all services |
 | `docker-compose logs -f` | Follow logs from all services |
 | `docker-compose ps` | Show running containers |
@@ -82,6 +82,8 @@ docker-compose logs -f
 docker-compose logs -f backend
 docker-compose logs -f frontend
 docker-compose logs -f postgres
+docker-compose logs -f ollama
+docker-compose logs -f ollama-init
 ```
 
 ## Access Database
@@ -103,7 +105,42 @@ docker-compose exec frontend /bin/sh
 |---------|------|-----|
 | Frontend (React) | 3000 | http://localhost:3000 |
 | Backend (Spring Boot) | 8080 | http://localhost:8080 |
-| PostgreSQL | 5432 | localhost:5432 |
+| PostgreSQL (pgvector) | 5432 | localhost:5432 |
+| Ollama API | 11434 | http://localhost:11434 |
+
+## Ollama Quick Commands
+
+### Pull/verify models
+
+```bash
+docker compose exec ollama ollama pull qwen2.5:0.5b
+docker compose exec ollama ollama pull nomic-embed-text
+docker compose exec ollama ollama list
+```
+
+### Run auto-init pull service
+
+```bash
+docker compose up -d ollama
+docker compose run --rm ollama-init
+```
+
+### Test Ollama API (PowerShell)
+
+```powershell
+Invoke-RestMethod -Method Get -Uri "http://localhost:11434/api/tags"
+
+$headers = @{ "Content-Type" = "application/json" }
+$body = '{"model":"nomic-embed-text","prompt":"wireless bluetooth headphones"}'
+Invoke-RestMethod -Method Post -Uri "http://localhost:11434/api/embeddings" -Headers $headers -Body $body
+```
+
+### Test Ollama API (CMD)
+
+```cmd
+curl -X GET http://localhost:11434/api/tags
+curl -X POST http://localhost:11434/api/embeddings -H "Content-Type: application/json" -d "{\"model\":\"nomic-embed-text\",\"prompt\":\"wireless bluetooth headphones\"}"
+```
 
 ## Environment Variables Required
 
@@ -148,6 +185,8 @@ docker-compose up -d --build
 - **PostgreSQL data**: Stored in `postgres_data` volume
 - Survives container restarts
 - Deleted with: `docker-compose down -v`
+- **Ollama models**: Stored in `ollama_data` volume
+- Survive container restarts and image updates
 
 ## Full Documentation
 

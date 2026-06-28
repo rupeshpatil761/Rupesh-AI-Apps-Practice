@@ -1,6 +1,33 @@
 services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    networks:
+      - ecom_network
+
+  ollama-init:
+    image: ollama/ollama:latest
+    depends_on:
+      - ollama
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: [ "/bin/sh", "-c" ]
+    command: >
+      "until ollama list >/dev/null 2>&1; do echo 'Waiting for Ollama...'; sleep 2; done;
+       ollama pull qwen2.5:0.5b;
+       ollama pull nomic-embed-text"
+    restart: "no"
+    networks:
+      - ecom_network
+
   postgres:
-    image: postgres:16-alpine
+    #image: postgres:16-alpine
+    image: pgvector/pgvector:pg16
     container_name: ecom_postgres
     environment:
       POSTGRES_USER: postgres
@@ -63,6 +90,7 @@ services:
 
 volumes:
   postgres_data:
+  ollama_data:
 
 networks:
   ecom_network:
