@@ -278,12 +278,13 @@ const AddProduct = () => {
         const responseData = error?.response?.data;
 
         if (responseData && typeof responseData === "object" && !Array.isArray(responseData)) {
-          // Handle field-level server validation errors
           setErrors(responseData);
-          const firstErrorMessage = Object.values(responseData).find((value) => typeof value === "string");
-          toast.error(firstErrorMessage || "Failed to add product. Please check the form and try again.");
+          const serverMessage = responseData.message || responseData.error;
+          toast.error(`Backend Error - ${serverMessage || "Failed to add product. Please check the form and try again."}`);
+        } else if (typeof responseData === "string" && responseData.trim()) {
+          toast.error(`Backend Error - ${responseData}`);
         } else {
-          toast.error("Failed to add product. Check the description length and other fields. Please try again.");
+          toast.error("Backend Error - Failed to add product. Check the description length and other fields. Please try again.");
         }
 
         setLoading(false); // Only set loading false on error, success navigates away
