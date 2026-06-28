@@ -1,0 +1,71 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ecom_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ecom-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecom_network
+
+  backend:
+    build:
+      context: ./SpringEcomBackend
+      dockerfile: Dockerfile
+    container_name: ecom_backend
+    environment:
+      SPRING_APPLICATION_NAME: SpringEcomBackend
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecom-db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_AI_ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      SPRING_AI_ANTHROPIC_CHAT_OPTIONS_MODEL: claude-haiku-4-5
+      SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 100MB
+      SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: 100MB
+      LOGGING_LEVEL_COM_PRACTICE_SPRING_AI: INFO
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - ecom_network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./Ecom-FrontEnd-AI
+      dockerfile: Dockerfile
+      args:
+        VITE_BASE_URL: http://localhost:8080
+    container_name: ecom_frontend
+    environment:
+      VITE_BASE_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - ecom_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  ecom_network:
+    driver: bridge
+
+
