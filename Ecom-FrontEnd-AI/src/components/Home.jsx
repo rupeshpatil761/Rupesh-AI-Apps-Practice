@@ -126,15 +126,20 @@ const Home = ({ selectedCategory }) => {
                 <div className="col" key={id}>
                   <div className={`card h-100 shadow-sm ${!productAvailable ? 'bg-light' : ''}`}>
                     <Link to={`/product/${id}`} className="text-decoration-none text-dark">
-                      <img
-                        src={convertBase64ToDataURL(productImage)} 
-                        alt={name}
-                        className="card-img-top p-2"
-                        style={{ height: "150px", objectFit: "cover" }}
-                        onError={(e) => {
-                          e.target.src = unplugged; // Fallback image if conversion fails
-                        }}
-                      />
+                      <div
+                        className="d-flex align-items-center justify-content-center bg-white"
+                        style={{ height: "260px" }}
+                      >
+                        <img
+                          src={convertBase64ToDataURL(productImage)}
+                          alt={name}
+                          className="card-img-top"
+                          style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" }}
+                          onError={(e) => {
+                            e.target.src = unplugged; // Fallback image if conversion fails
+                          }}
+                        />
+                      </div>
                       <div className="card-body d-flex flex-column">
                         <h5 className="card-title">{name.toUpperCase()}</h5>
                         <p className="card-text text-muted fst-italic">~ {brand}</p>

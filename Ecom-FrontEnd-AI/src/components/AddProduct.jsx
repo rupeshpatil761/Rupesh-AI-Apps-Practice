@@ -275,12 +275,17 @@ const AddProduct = () => {
       })
       .catch((error) => {
         console.error("Error adding product:", error);
-        if (error.response && error.response.data) {
-          // Handle server validation errors
-          setErrors(error.response.data);
+        const responseData = error?.response?.data;
+
+        if (responseData && typeof responseData === "object" && !Array.isArray(responseData)) {
+          // Handle field-level server validation errors
+          setErrors(responseData);
+          const firstErrorMessage = Object.values(responseData).find((value) => typeof value === "string");
+          toast.error(firstErrorMessage || "Failed to add product. Please check the form and try again.");
         } else {
-          toast.error('Error adding product')
+          toast.error("Failed to add product. Check the description length and other fields. Please try again.");
         }
+
         setLoading(false); // Only set loading false on error, success navigates away
       });
   };
