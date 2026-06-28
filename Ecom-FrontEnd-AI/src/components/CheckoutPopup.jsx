@@ -1,11 +1,13 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Modal, Button, Form, Alert, Toast, ToastContainer } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import AppContext from '../Context/Context';
 
 const CheckoutPopup = ({ show, handleClose, cartItems, totalPrice }) => {
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
+  const { clearCart } = useContext(AppContext);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -48,8 +50,8 @@ const CheckoutPopup = ({ show, handleClose, cartItems, totalPrice }) => {
       setToastMessage('Order placed successfully!');
       setShowToast(true);
 
-      // Clear cart and redirect after a short delay
-      localStorage.removeItem('cart');
+      // Clear cart state (also syncs localStorage via context effect) and redirect after a short delay
+      clearCart();
       setTimeout(() => {
         navigate('/');
       }, 2000);

@@ -1,14 +1,13 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import AppContext from "../Context/Context";
 
 const Navbar = ({ onSelectCategory }) => {
   const getInitialTheme = () => {
     const storedTheme = localStorage.getItem("theme");
     return storedTheme ? storedTheme : "light-theme";
   };
-  
+
   const [selectedCategory, setSelectedCategory] = useState("");
   const [theme, setTheme] = useState(getInitialTheme());
   const [input, setInput] = useState("");
@@ -22,11 +21,9 @@ const Navbar = ({ onSelectCategory }) => {
   // 2. Add these new state variables
 const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 const navbarRef = useRef(null);
-  
+
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_BASE_URL;
-  const { cart } = useContext(AppContext);
-  const cartCount = cart.reduce((total, item) => total + (item.quantity || 0), 0);
 
   useEffect(() => {
     fetchInitialData();
@@ -40,10 +37,10 @@ useEffect(() => {
       setIsNavCollapsed(true);
     }
   };
-  
+
   // Add event listener to document when component mounts
   document.addEventListener("mousedown", handleClickOutside);
-  
+
   // Clean up event listener on component unmount
   return () => {
     document.removeEventListener("mousedown", handleClickOutside);
@@ -79,19 +76,19 @@ const handleLinkClick = () => {
   // Only search when the form is submitted
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (input.trim() === "") return;
-    
+
     setShowNoProductsMessage(false);
     setIsLoading(true);
     setIsNavCollapsed(true);
-    
+
     try {
       const response = await axios.get(
         `${baseUrl}/api/products/search?keyword=${input}`
       );
       setSearchResults(response.data);
-      
+
       if (response.data.length === 0) {
         setNoResults(true);
         setShowNoProductsMessage(true);
@@ -99,7 +96,7 @@ const handleLinkClick = () => {
         // Redirect to search results page with the search data
         navigate(`/search-results`, { state: { searchData: response.data } });
       }
-      
+
       console.log("Search results:", response.data);
     } catch (error) {
       console.error("Error searching:", error);
@@ -114,7 +111,7 @@ const handleLinkClick = () => {
     onSelectCategory(category);
     setIsNavCollapsed(true);
   };
-  
+
   const toggleTheme = () => {
     const newTheme = theme === "dark-theme" ? "light-theme" : "dark-theme";
     setTheme(newTheme);
@@ -132,12 +129,13 @@ const handleLinkClick = () => {
     "Electronics",
     "Toys",
     "Fashion",
+    "Other",
   ];
-  
+
   return (
     <nav className="navbar navbar-expand-lg fixed-top bg-white shadow-sm" ref={navbarRef}>
       <div className="container-fluid">
-        <a className="navbar-brand" href="https://google.com/">
+        <a className="navbar-brand" href="/">
           Ecommerce UI
         </a>
         <button
@@ -166,22 +164,56 @@ const handleLinkClick = () => {
               </a>
             </li>
 
+            {/* Dropdown is commented out in the original code */}
+            {/* <li className="nav-item dropdown">
+              <a
+                className="nav-link dropdown-toggle"
+                href="/"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Categories
+              </a>
 
+              <ul className="dropdown-menu">
+                {categories.map((category) => (
+                  <li key={category}>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => handleCategorySelect(category)}
+                    >
+                      {category}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </li> */}
+
+            <li className="nav-item">
+              <a className="nav-link" href="/askai" onClick={handleLinkClick}>
+                Ask AI
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/orders" onClick={handleLinkClick}>
+                Orders
+              </a>
+            </li>
           </ul>
-          
-         
-          
+
+
+
           <div className="d-flex align-items-center">
             <a href="/cart" className="nav-link text-dark me-3" onClick={handleLinkClick}>
               <i className="bi bi-cart me-1"></i>
               Cart
-              <span className="badge rounded-pill bg-danger ms-2">{cartCount}</span>
             </a>
             <form className="d-flex" role="search" onSubmit={handleSubmit} id="searchForm">
               <input
                 className="form-control me-2"
                 type="search"
-                placeholder="Type to search"
+                placeholder="type to search"
                 aria-label="Search"
                 value={input}
                 onChange={(e) => handleInputChange(e.target.value)}

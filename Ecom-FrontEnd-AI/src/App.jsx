@@ -4,6 +4,8 @@ import Navbar from "./components/Navbar";
 import Cart from "./components/Cart";
 import AddProduct from "./components/AddProduct";
 import Product from "./components/Product";
+import Order from "./components/Order";
+import AskAI from "./components/AskAI";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppProvider } from "./Context/Context";
 import UpdateProduct from "./components/UpdateProduct";
@@ -40,6 +42,8 @@ function App() {
             <Route path="/product" element={<Product />} />
             <Route path="product/:id" element={<Product />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/orders" element={<Order />} />
+            <Route path="/askai" element={<AskAI />} />
             <Route path="/product/update/:id" element={<UpdateProduct />} />
         
             <Route path="/search-results" element={<SearchResults />} />
