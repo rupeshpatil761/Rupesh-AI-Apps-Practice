@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import AppContext from "../Context/Context";
 
 const Navbar = ({ onSelectCategory }) => {
   const getInitialTheme = () => {
@@ -24,6 +25,8 @@ const navbarRef = useRef(null);
   
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_BASE_URL;
+  const { cart } = useContext(AppContext);
+  const cartCount = cart.reduce((total, item) => total + (item.quantity || 0), 0);
 
   useEffect(() => {
     fetchInitialData();
@@ -172,6 +175,7 @@ const handleLinkClick = () => {
             <a href="/cart" className="nav-link text-dark me-3" onClick={handleLinkClick}>
               <i className="bi bi-cart me-1"></i>
               Cart
+              <span className="badge rounded-pill bg-danger ms-2">{cartCount}</span>
             </a>
             <form className="d-flex" role="search" onSubmit={handleSubmit} id="searchForm">
               <input
