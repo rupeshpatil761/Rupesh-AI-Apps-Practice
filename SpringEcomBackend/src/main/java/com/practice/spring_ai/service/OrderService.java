@@ -30,6 +30,9 @@ public class OrderService {
     @Autowired
     private OrderRepo orderRepo;
 
+    @Autowired
+    private VectorStoreService vectorStoreService;
+
     public OrderResponse placeOrder(OrderRequest request) {
         log.info(
                 "Placing order for customer='{}', email='{}', itemCount={}",
@@ -44,6 +47,9 @@ public class OrderService {
 
         Order savedOrder = orderRepo.save(order);
         log.info("Order persisted successfully: orderId='{}', dbId={}", savedOrder.getOrderId(), savedOrder.getId());
+
+        // save the order embedding in the vector store for future semantic search
+        vectorStoreService.storeOrderEmbeddingInVectorStore(savedOrder);
 
         List<OrderItemResponse> itemResponses = toItemResponses(order.getOrderItems());
         return toOrderResponse(savedOrder, itemResponses);
@@ -101,6 +107,10 @@ public class OrderService {
 
             product.setStockQuantity(updatedStock);
             productRepo.save(product);
+
+            // Update the vector store with the new stock quantity
+            vectorStoreService.deleteEmbeddingFromVectorStore(product.getId());
+            vectorStoreService.storeProductEmbeddingInVectorStore(product);
 
             OrderItem orderItem = OrderItem.builder()
                     .product(product)
