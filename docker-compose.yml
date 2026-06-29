@@ -12,6 +12,7 @@ services:
 
   ollama-init:
     image: ollama/ollama:latest
+    container_name: ollama_init_script
     depends_on:
       - ollama
     environment:
