@@ -4,21 +4,10 @@ import AppContext from "../Context/Context";
 import unplugged from "../assets/unplugged.png";
 
 const Home = ({ selectedCategory }) => {
-  const { data, isError, addToCart, refreshData } = useContext(AppContext);
-  const [isDataFetched, setIsDataFetched] = useState(false);
+  const { data, isError, addToCart } = useContext(AppContext);
   const [showToast, setShowToast] = useState(false);
   const [toastProduct, setToastProduct] = useState(null);
 
-  useEffect(() => {
-    if (!isDataFetched) {
-      refreshData();
-      setIsDataFetched(true);
-    }
-  }, [refreshData, isDataFetched]);
-
-  useEffect(() => {
-    console.log(data, 'data from home page');
-  }, [data]);
 
   useEffect(() => {
     let toastTimer;

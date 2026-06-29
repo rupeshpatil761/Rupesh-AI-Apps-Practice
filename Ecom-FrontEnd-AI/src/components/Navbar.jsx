@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../axios";
 import AppContext from "../Context/Context";
 
 const Navbar = ({ onSelectCategory }) => {
@@ -28,37 +28,19 @@ const navbarRef = useRef(null);
   const { cart } = useContext(AppContext);
   const cartCount = cart.reduce((total, item) => total + (item.quantity || 1), 0);
 
+  // Close navbar when clicking outside
   useEffect(() => {
-    fetchInitialData();
+    const handleClickOutside = (event) => {
+      if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+        setIsNavCollapsed(true);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
-  // 3. Add this to your useEffect or as a separate useEffect
-useEffect(() => {
-  // Add click event listener to close navbar when clicking outside
-  const handleClickOutside = (event) => {
-    if (navbarRef.current && !navbarRef.current.contains(event.target)) {
-      setIsNavCollapsed(true);
-    }
-  };
-
-  // Add event listener to document when component mounts
-  document.addEventListener("mousedown", handleClickOutside);
-
-  // Clean up event listener on component unmount
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
-
-  // Initial data fetch (if needed)
-  const fetchInitialData = async () => {
-    try {
-      const response = await axios.get(`${baseUrl}/api/products`);
-      console.log(response.data, 'navbar initial data');
-    } catch (error) {
-      console.error("Error fetching initial data:", error);
-    }
-  };
 
 // 4. Add these new functions
 // Toggle navbar collapse state

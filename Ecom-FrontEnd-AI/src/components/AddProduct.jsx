@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useContext } from "react";
+import axios from "../axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import AppContext from "../Context/Context";
 
 const AddProduct = () => {
   const [product, setProduct] = useState({
@@ -16,6 +17,8 @@ const AddProduct = () => {
   });
 
   const baseUrl = import.meta.env.REACT_BASE_URL;
+  const { refreshData } = useContext(AppContext);
+  const navigate = useNavigate();
 
   const [image, setImage] = useState(null); // Now optional
   const [loading, setLoading] = useState(false);
@@ -29,7 +32,6 @@ const AddProduct = () => {
   const [aiGeneratedImage, setAiGeneratedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
-  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -271,6 +273,7 @@ const AddProduct = () => {
         setImagePreview(null);
         setValidated(false);
         setErrors({});
+        refreshData(); // refresh Context so Home shows the new product
         navigate('/');
       })
       .catch((error) => {
