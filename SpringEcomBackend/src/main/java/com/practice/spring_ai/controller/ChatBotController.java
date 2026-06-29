@@ -14,9 +14,8 @@ public class ChatBotController {
     private ChatBotService chatBotService;
 
     @GetMapping("/ask")
-    public ResponseEntity<String> askBot(@RequestParam String message){
-
-        String response = chatBotService.getBotResponse(message);
+    public ResponseEntity<String> askBot(@RequestParam String userQuery) {
+        String response = chatBotService.getBotResponse(userQuery);
         return ResponseEntity.ok(response);
     }
 }

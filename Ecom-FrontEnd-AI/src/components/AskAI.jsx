@@ -50,7 +50,7 @@ function AskAi() {
 
   async function processMessageToChatGPT(chatMessage) {
     // Don’t send JSON header for a GET returning plain text
-    const url = `${baseUrl}/api/chat/ask?message=${encodeURIComponent(chatMessage)}`;
+    const url = `${baseUrl}/api/chat/ask?userQuery=${encodeURIComponent(chatMessage)}`;
 
     const response = await fetch(url, {
       method: "GET"
