@@ -1,17 +1,15 @@
 -- PostgreSQL initial setup script
--- Tables will be created automatically by Spring JPA (ddl-auto: update)
--- This script is run on container startup
+-- This script is run once when a fresh Postgres data directory is initialized
 
--- Verify database exists (optional)
-SELECT 'Database initialized and ready for Spring JPA' as status;
+SELECT 'Database initialized and ready for Spring JPA' AS status;
 
 CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE IF NOT EXISTS vector_store(
-    id TEXT PRIMARY KEY, -- id should be TEXT (not UUID type)
+    id TEXT PRIMARY KEY,
     content TEXT,
     metadata JSONB,
-    embedding VECTOR(1536)
+    embedding VECTOR(768)  -- nomic-embed-text produces 768-dimensional vectors
 );
 
 -- Create HNSW index for fast search
