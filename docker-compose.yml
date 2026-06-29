@@ -54,7 +54,7 @@ services:
     container_name: ecom_backend
     environment:
       SPRING_APPLICATION_NAME: SpringEcomBackend
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecom-db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5433/ecom-db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_JPA_HIBERNATE_DDL_AUTO: update

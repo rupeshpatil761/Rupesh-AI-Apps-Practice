@@ -22,7 +22,6 @@ public class ChatBotService {
 
     private static final Logger log = LoggerFactory.getLogger(ChatBotService.class);
     private static final String PROMPT_PATH = "prompts/chatbot-rag-prompt.st";
-    private static final String DEFAULT_ERROR_RESPONSE = "Something went wrong in ChatBotService. Please retry";
 
     private final ChatClient claudeChatClient;
     private final PgVectorStore vectorStore;
@@ -38,6 +37,7 @@ public class ChatBotService {
         try {
             String promptStringTemplate = loadPromptTemplate();
             String context = fetchSemanticContext(userQuery);
+            log.info("Fetched context for userQuery '{}': {}", userQuery, context);
             Map<String, Object> variables = new HashMap<>();
             variables.put("userQuery", userQuery);
             variables.put("context", context);
@@ -50,7 +50,7 @@ public class ChatBotService {
             return claudeChatClient.prompt(promptTemplate.create()).call().content();
         } catch (Exception exception) {
             log.error("ChatBotService failed while generating response for query='{}'", userQuery, exception);
-            return DEFAULT_ERROR_RESPONSE;
+            return "Bot Failed "+ exception.getMessage();
         }
     }
 
