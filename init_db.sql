@@ -12,5 +12,6 @@ CREATE TABLE IF NOT EXISTS product_embeddings (
     id TEXT PRIMARY KEY, -- it should be TEXT (not UUID)
     --product_id BIGINT NOT NULL,
     content TEXT NOT NULL,
-    embedding vector(1536) NOT NULL
+    --embedding vector(1536) NOT NULL
+    embedding vector NOT NULL
 );

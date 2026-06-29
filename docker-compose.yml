@@ -59,6 +59,8 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_AI_ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       SPRING_AI_ANTHROPIC_CHAT_OPTIONS_MODEL: claude-haiku-4-5
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_EMBED_MODEL: nomic-embed-text
       SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 100MB
       SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: 100MB
       LOGGING_LEVEL_COM_PRACTICE_SPRING_AI: INFO
@@ -67,6 +69,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      ollama-init:
+        condition: service_completed_successfully
     networks:
       - ecom_network
     restart: unless-stopped
